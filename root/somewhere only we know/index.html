@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somewhere Only We Know - Keane (2004)</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌲</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Trebuchet MS', 'Lucida Sans', sans-serif;
+            overflow-x: hidden;
+            background: #0a1f1a;
+            color: #fff;
+            scroll-behavior: smooth;
+        }
+
+        /* Background video container */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+            filter: blur(2px);
+        }
+
+        /* Overlay with nature theme */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(20, 60, 40, 0.4), rgba(5, 15, 10, 0.8));
+            z-index: -1;
+        }
+
+        /* Hero Section - Full Screen */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            animation: fadeInScale 2s ease-out;
+        }
+
+        .hero-title {
+            font-size: 5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(180deg, #e8f5e9, #4caf50, #2e7d32);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(76, 175, 80, 0.5));
+            letter-spacing: 3px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.8em;
+            color: #a5d6a7;
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        /* Circular image gallery */
+        .circular-gallery {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 50px;
+            position: relative;
+        }
+
+        .circle-container {
+            position: relative;
+            width: min(600px, 90vw);
+            height: min(600px, 90vw);
+            margin: 0 auto;
+        }
+
+        .circle-item {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 15px 60px rgba(76, 175, 80, 0.6);
+            border: 4px solid rgba(144, 238, 144, 0.4);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+        }
+
+        .circle-item:hover {
+            transform: scale(1.2);
+            box-shadow: 0 25px 80px rgba(76, 175, 80, 0.9);
+            border-color: rgba(144, 238, 144, 0.8);
+            z-index: 100;
+        }
+
+        .circle-item img, .circle-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .circle-1 { top: 0; left: 50%; transform: translateX(-50%); }
+        .circle-2 { right: 0; top: 50%; transform: translateY(-50%); }
+        .circle-3 { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .circle-4 { left: 0; top: 50%; transform: translateY(-50%); }
+
+        .circle-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 5;
+        }
+
+        .circle-center-text {
+            font-size: 1.5em;
+            color: #90ee90;
+            font-style: italic;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            background: rgba(10, 31, 26, 0.8);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Split screen section */
+        .split-section {
+            height: 100vh;
+            display: flex;
+        }
+
+        .split-half {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            transition: flex 0.8s ease;
+        }
+
+        .split-half:hover {
+            flex: 1.5;
+        }
+
+        .split-half img, .split-half video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .split-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 31, 26, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .split-half:hover .split-overlay {
+            background: rgba(10, 31, 26, 0.3);
+        }
+
+        .split-text {
+            font-size: 2.5em;
+            color: #90ee90;
+            font-style: italic;
+            text-align: center;
+            padding: 30px;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Horizontal scroll section */
+        .horizontal-section {
+            padding: 100px 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .horizontal-section::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .horizontal-section::-webkit-scrollbar-track {
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .horizontal-section::-webkit-scrollbar-thumb {
+            background: rgba(76, 175, 80, 0.5);
+            border-radius: 10px;
+        }
+
+        .horizontal-container {
+            display: inline-flex;
+            gap: 40px;
+            padding: 0 50px;
+        }
+
+        .horizontal-card {
+            width: min(450px, 85vw);
+            height: 500px;
+            display: inline-block;
+            white-space: normal;
+            scroll-snap-align: center;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(76, 175, 80, 0.4);
+            transition: all 0.4s;
+            background: rgba(15, 40, 30, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .horizontal-card:hover {
+            transform: translateY(-20px);
+            box-shadow: 0 30px 80px rgba(76, 175, 80, 0.7);
+        }
+
+        .horizontal-card-img {
+            width: 100%;
+            height: 60%;
+            object-fit: cover;
+        }
+
+        .horizontal-card-content {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .horizontal-card-title {
+            font-size: 1.5em;
+            color: #90ee90;
+            margin-bottom: 15px;
+        }
+
+        .horizontal-card-text {
+            color: #c8e6c9;
+            line-height: 1.6;
+        }
+
+        /* Overlapping content section */
+        .overlap-section {
+            min-height: 100vh;
+            padding: 100px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .overlap-container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            height: min(700px, 80vh);
+        }
+
+        .overlap-img {
+            position: absolute;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s;
+        }
+
+        .overlap-img:hover {
+            transform: scale(1.05) !important;
+            z-index: 100 !important;
+            box-shadow: 0 30px 80px rgba(76, 175, 80, 0.6);
+        }
+
+        .overlap-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlap-1 {
+            width: min(500px, 70vw);
+            height: min(350px, 40vh);
+            top: 50px;
+            left: 0;
+            z-index: 3;
+            transform: rotate(-3deg);
+        }
+
+        .overlap-2 {
+            width: min(450px, 65vw);
+            height: min(400px, 45vh);
+            top: 150px;
+            right: 100px;
+            z-index: 2;
+            transform: rotate(5deg);
+        }
+
+        .overlap-3 {
+            width: min(400px, 60vw);
+            height: min(300px, 35vh);
+            bottom: 50px;
+            left: 200px;
+            z-index: 4;
+            transform: rotate(-5deg);
+        }
+
+        /* Lyrics section */
+        .lyrics-section {
+            padding: 80px 5%;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lyrics-container {
+            max-width: 900px;
+            width: 90%;
+            background: rgba(15, 40, 30, 0.85);
+            border-radius: 30px;
+            padding: 60px 5%;
+            box-shadow: 0 20px 60px rgba(76, 175, 80, 0.4);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .lyrics-title {
+            font-size: 2.5em;
+            color: #90ee90;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .lyrics-content {
+            text-align: center;
+            color: #c8e6c9;
+            font-size: 1.2em;
+            line-height: 2;
+        }
+
+        .lyrics-verse, .lyrics-chorus {
+            margin: 30px 0;
+            font-style: italic;
+            opacity: 0.9;
+            transition: all 0.3s;
+        }
+
+        .lyrics-verse:hover, .lyrics-chorus:hover {
+            opacity: 1;
+            color: #90ee90;
+            transform: scale(1.02);
+        }
+
+        .lyrics-chorus {
+            font-weight: bold;
+            color: #a5d6a7;
+            font-size: 1.1em;
+        }
+
+        /* Audio player section */
+        .audio-section {
+            padding: 80px 5%;
+            text-align: center;
+            background: rgba(20, 60, 40, 0.4);
+        }
+
+        .audio-player {
+            max-width: 800px;
+            width: 90%;
+            margin: 0 auto;
+            background: rgba(15, 40, 30, 0.9);
+            border-radius: 30px;
+            padding: 50px 5%;
+            box-shadow: 0 20px 60px rgba(76, 175, 80, 0.4);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .audio-title {
+            font-size: 2.5em;
+            color: #90ee90;
+            margin-bottom: 30px;
+        }
+
+        .audio-controls audio {
+            width: 100%;
+            height: 60px;
+            border-radius: 50px;
+        }
+
+        /* Floating leaves */
+        .leaves {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .leaf {
+            position: absolute;
+            font-size: 35px;
+            animation: fall 18s infinite ease-in;
+            opacity: 0.6;
+        }
+
+        /* Scroll progress indicator */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            z-index: 9999;
+            transition: width 0.1s;
+        }
+
+        /* Animations */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                top: -100px;
+                opacity: 0.8;
+                transform: translateX(0) rotate(0deg);
+            }
+            100% {
+                top: 110%;
+                opacity: 0;
+                transform: translateX(150px) rotate(720deg);
+            }
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 3.5em;
+            }
+            .circle-container {
+                width: min(500px, 85vw);
+                height: min(500px, 85vw);
+            }
+            .circle-item {
+                width: min(200px, 35vw);
+                height: min(200px, 35vw);
+            }
+            .split-section {
+                flex-direction: column;
+                height: auto;
+            }
+            .split-half {
+                min-height: 50vh;
+            }
+            .overlap-container {
+                height: 600px;
+            }
+            .overlap-1, .overlap-2, .overlap-3 {
+                width: 350px !important;
+                height: 250px !important;
+            }
+        }
+
+        /* Responsive - Mobile */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5em;
+                letter-spacing: 1px;
+            }
+            .hero-subtitle {
+                font-size: 1.2em;
+                letter-spacing: 4px;
+            }
+            .circular-gallery {
+                padding: 50px 20px;
+            }
+            .circle-container {
+                width: 350px;
+                height: 350px;
+            }
+            .circle-item {
+                width: 140px;
+                height: 140px;
+            }
+            .circle-center-text {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .split-text {
+                font-size: 1.5em;
+                padding: 20px;
+            }
+            .horizontal-card {
+                width: 300px;
+                height: 400px;
+            }
+            .horizontal-container {
+                padding: 0 20px;
+            }
+            .overlap-section {
+                padding: 50px 20px;
+            }
+            .overlap-container {
+                height: 500px;
+            }
+            .overlap-img {
+                width: 250px !important;
+                height: 180px !important;
+            }
+            .overlap-1 {
+                top: 20px;
+                left: 10px;
+            }
+            .overlap-2 {
+                top: 150px;
+                right: 10px;
+            }
+            .overlap-3 {
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%) rotate(-5deg);
+            }
+            .audio-section {
+                padding: 50px 20px;
+            }
+            .audio-player {
+                padding: 30px 20px;
+            }
+            .audio-title {
+                font-size: 1.8em;
+            }
+            .lyrics-section {
+                padding: 50px 3%;
+            }
+            .lyrics-container {
+                padding: 40px 5%;
+                width: 95%;
+            }
+            .lyrics-title {
+                font-size: 1.8em;
+            }
+            .lyrics-content {
+                font-size: 1em;
+                line-height: 1.8;
+            }
+            .lyrics-chorus {
+                font-size: 1.05em;
+            }
+            .leaves {
+                display: none;
+            }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2em;
+            }
+            .hero-subtitle {
+                font-size: 1em;
+                letter-spacing: 2px;
+            }
+            .circle-container {
+                width: 280px;
+                height: 280px;
+            }
+            .circle-item {
+                width: 110px;
+                height: 110px;
+            }
+            .horizontal-card {
+                width: 260px;
+            }
+            .lyrics-container {
+                padding: 30px 4%;
+            }
+            .lyrics-title {
+                font-size: 1.5em;
+                margin-bottom: 25px;
+            }
+            .lyrics-content {
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background video -->
+    <div class="bg-video">
+        <video autoplay loop muted playsinline>
+            <source src="media/background-forest.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="overlay"></div>
+
+    <!-- Scroll progress bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Floating leaves -->
+    <div class="leaves" id="leaves"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Somewhere Only We Know</h1>
+            <p class="hero-subtitle">Keane • 2004</p>
+        </div>
+    </section>
+
+    <!-- Circular Gallery -->
+    <section class="circular-gallery">
+        <div class="circle-container">
+            <div class="circle-item circle-1">
+                <img src="media/old-tree.png" alt="Ancient tree">
+            </div>
+            <div class="circle-item circle-2">
+                <img src="media/empty-field.png" alt="Empty land">
+            </div>
+            <div class="circle-item circle-3">
+                <img src="media/forest-path.png" alt="Forest path">
+            </div>
+            <div class="circle-item circle-4">
+                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80" alt="Nature" onerror="this.src='media/old-tree.png'">
+            </div>
+            <div class="circle-center">
+                <div class="circle-center-text">This could be<br>the end of everything</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Split Screen Section -->
+    <section class="split-section">
+        <div class="split-half">
+            <img src="media/old-tree.png" alt="Simple thing">
+            <div class="split-overlay">
+                <div class="split-text">Oh, simple thing<br>where have you gone?</div>
+            </div>
+        </div>
+        <div class="split-half">
+            <video autoplay loop muted playsinline>
+                <source src="media/river-flowing.mp4" type="video/mp4">
+            </video>
+            <div class="split-overlay">
+                <div class="split-text">I felt the earth<br>beneath my feet</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horizontal Scroll Section -->
+    <section class="horizontal-section">
+        <div class="horizontal-container">
+            <div class="horizontal-card">
+                <img src="media/empty-field.png" alt="Empty land" class="horizontal-card-img">
+                <div class="horizontal-card-content">
+                    <h3 class="horizontal-card-title">The Journey</h3>
+                    <p class="horizontal-card-text">I walked across an empty land, I knew the pathway like the back of my hand</p>
+                </div>
+            </div>
+            <div class="horizontal-card">
+                <img src="media/forest-path.png" alt="Forest path" class="horizontal-card-img">
+                <div class="horizontal-card-content">
+                    <h3 class="horizontal-card-title">The Path</h3>
+                    <p class="horizontal-card-text">And if you have a minute, why don't we go somewhere only we know?</p>
+                </div>
+            </div>
+            <div class="horizontal-card">
+                <img src="media/old-tree.png" alt="Tree" class="horizontal-card-img">
+                <div class="horizontal-card-content">
+                    <h3 class="horizontal-card-title">The Place</h3>
+                    <p class="horizontal-card-text">I came upon a fallen tree, I felt the branches of it looking at me</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overlapping Images Section -->
+    <section class="overlap-section">
+        <div class="overlap-container">
+            <div class="overlap-img overlap-1">
+                <img src="media/forest-path.png" alt="Path">
+            </div>
+            <div class="overlap-img overlap-2">
+                <img src="media/empty-field.png" alt="Field">
+            </div>
+            <div class="overlap-img overlap-3">
+                <img src="media/old-tree.png" alt="Tree">
+            </div>
+        </div>
+    </section>
+
+    <!-- Lyrics Section -->
+    <section class="lyrics-section">
+        <div class="lyrics-container">
+            <h2 class="lyrics-title">✨ Lyrics ✨</h2>
+            <div class="lyrics-content">
+                <p class="lyrics-verse">I walked across an empty land<br>
+                I knew the pathway like the back of my hand<br>
+                I felt the earth beneath my feet<br>
+                Sat by the river and it made me complete</p>
+                
+                <p class="lyrics-verse">Oh simple thing where have you gone<br>
+                I'm getting old and I need something to rely on<br>
+                So tell me when you're gonna let me in<br>
+                I'm getting tired and I need somewhere to begin</p>
+                
+                <p class="lyrics-chorus">And if you have a minute why don't we go<br>
+                Talk about it somewhere only we know?<br>
+                This could be the end of everything<br>
+                So why don't we go<br>
+                Somewhere only we know?</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audio Player Section -->
+    <section class="audio-section">
+        <div class="audio-player">
+            <h2 class="audio-title">🎵 Listen 🎵</h2>
+            <div class="audio-controls">
+                <audio controls>
+                    <source src="media/somewhere-only-we-know.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Falling leaves
+        function createLeaf() {
+            const leaves = ['🍂', '🍃', '🌿'];
+            const leaf = document.createElement('div');
+            leaf.className = 'leaf';
+            leaf.innerHTML = leaves[Math.floor(Math.random() * leaves.length)];
+            leaf.style.left = Math.random() * 100 + '%';
+            leaf.style.animationDuration = (Math.random() * 10 + 18) + 's';
+            leaf.style.fontSize = (Math.random() * 20 + 25) + 'px';
+            document.getElementById('leaves').appendChild(leaf);
+            setTimeout(() => leaf.remove(), 28000);
+        }
+
+        setInterval(createLeaf, 4000);
+
+        // Scroll progress bar
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('scrollProgress').style.width = scrolled + '%';
+        });
+
+        // Parallax effect for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const heroContent = document.querySelector('.hero-content');
+            if (heroContent) {
+                heroContent.style.transform = `translateY(${scrolled * 0.5}px)`;
+                heroContent.style.opacity = 1 - (scrolled / 600);
+            }
+        });
+    </script>
+</body>
+</html>
