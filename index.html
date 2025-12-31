@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Tributes Collection</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎵</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Trebuchet MS', 'Lucida Sans', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.6;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-100px) rotate(180deg);
+                opacity: 0.8;
+            }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b, #4ecdc4, #95e1d3);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 8s ease infinite;
+            letter-spacing: 2px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #a8dadc;
+            font-weight: 300;
+            letter-spacing: 3px;
+        }
+
+        /* Main content */
+        main {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 50px;
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        /* Song cards */
+        .song-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .song-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .song-card:hover::before {
+            left: 100%;
+        }
+
+        .song-card:hover {
+            transform: translateY(-20px) scale(1.03);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .song-icon {
+            font-size: 5em;
+            margin-bottom: 25px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .song-card:hover .song-icon {
+            animation: spin 1s ease-in-out;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            to { transform: rotate(360deg) scale(1); }
+        }
+
+        .song-title {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .song-artist {
+            font-size: 1.2em;
+            color: #a8dadc;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .song-year {
+            font-size: 1em;
+            color: #95e1d3;
+            margin-bottom: 25px;
+            opacity: 0.8;
+        }
+
+        .song-description {
+            font-size: 1.05em;
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .visit-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .visit-btn:hover::before {
+            left: 100%;
+        }
+
+        .visit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .visit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Card-specific colors */
+        .card-vintage {
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .card-vintage:hover {
+            border-color: rgba(255, 215, 0, 0.6);
+            box-shadow: 0 30px 80px rgba(255, 165, 0, 0.4);
+        }
+
+        .card-vintage .visit-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .card-nature {
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+
+        .card-nature:hover {
+            border-color: rgba(76, 175, 80, 0.6);
+            box-shadow: 0 30px 80px rgba(76, 175, 80, 0.4);
+        }
+
+        .card-nature .visit-btn {
+            background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);
+        }
+
+        .card-glitch {
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+
+        .card-glitch:hover {
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 30px 80px rgba(0, 255, 255, 0.4), 0 30px 80px rgba(255, 0, 255, 0.4);
+        }
+
+        .card-glitch .visit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: #a8dadc;
+            font-size: 0.95em;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .song-title {
+                font-size: 1.8em;
+            }
+
+            .song-icon {
+                font-size: 4em;
+            }
+        }
+
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 2em;
+                letter-spacing: 1px;
+            }
+
+            .subtitle {
+                font-size: 1em;
+                letter-spacing: 2px;
+            }
+
+            .song-card {
+                padding: 40px 30px;
+            }
+
+            .song-title {
+                font-size: 1.5em;
+            }
+
+            .song-icon {
+                font-size: 3.5em;
+            }
+
+            .visit-btn {
+                padding: 12px 30px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <header>
+        <h1>🎵 Song Tributes Collection 🎵</h1>
+        <p class="subtitle">A Musical Journey Through Time</p>
+    </header>
+
+    <!-- Main content -->
+    <main>
+        <div class="cards-container">
+            <!-- You Belong to Me Card -->
+            <div class="song-card card-vintage">
+                <div class="song-icon">✈️</div>
+                <h2 class="song-title">You Belong to Me</h2>
+                <p class="song-artist">Joni James</p>
+                <p class="song-year">1952</p>
+                <p class="song-description">
+                    A timeless romantic ballad that captures the essence of vintage travel and longing. 
+                    Experience the golden era of music with classic imagery and nostalgic charm.
+                </p>
+                <a href="root/you belong to me/index.html" class="visit-btn">Visit Page →</a>
+            </div>
+
+            <!-- Somewhere Only We Know Card -->
+            <div class="song-card card-nature">
+                <div class="song-icon">🌲</div>
+                <h2 class="song-title">Somewhere Only We Know</h2>
+                <p class="song-artist">Keane</p>
+                <p class="song-year">2004</p>
+                <p class="song-description">
+                    An indie rock masterpiece that evokes nature's beauty and intimate memories. 
+                    Explore a modern artistic journey through forests, paths, and secret places.
+                </p>
+                <a href="root/somewhere only we know/index.html" class="visit-btn">Visit Page →</a>
+            </div>
+
+            <!-- Hide and Seek Card -->
+            <div class="song-card card-glitch">
+                <div class="song-icon">👁️</div>
+                <h2 class="song-title">Hide and Seek</h2>
+                <p class="song-artist">Imogen Heap</p>
+                <p class="song-year">2005</p>
+                <p class="song-description">
+                    A haunting a cappella masterpiece processed through vocoders and harmonizers. 
+                    Experience raw emotion through digital glitch aesthetics and fragmented visuals.
+                </p>
+                <a href="root/hide & seek/index.html" class="visit-btn">Visit Page →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>🎶 Made with love for timeless music • 2025 🎶</p>
+    </footer>
+
+    <script>
+        // Create floating music particles
+        const particles = document.getElementById('particles');
+        const musicSymbols = ['♪', '♫', '♬', '🎵', '🎶', '🎼'];
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.innerHTML = musicSymbols[Math.floor(Math.random() * musicSymbols.length)];
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particles.appendChild(particle);
+        }
+
+        // Create initial particles
+        for (let i = 0; i < 20; i++) {
+            createParticle();
+        }
+
+        // Add hover effect on cards
+        const cards = document.querySelectorAll('.song-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.zIndex = '100';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.zIndex = '1';
+            });
+        });
+    </script>
+</body>
+</html>
